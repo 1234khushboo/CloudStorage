@@ -1,0 +1,11 @@
+import { S3Client } from '@aws-sdk/client-s3';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import dotenv from 'dotenv';
+dotenv.config();
+export const awsEnabled = process.env.AWS_MODE === 'aws';
+export const bucket = process.env.S3_BUCKET;
+export const table = process.env.DYNAMODB_TABLE || 'CloudBoxFiles';
+export const s3 = new S3Client({ region: process.env.AWS_REGION || 'ap-south-1' });
+export const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({ region: process.env.AWS_REGION || 'ap-south-1' }));
+if (awsEnabled && !bucket) throw new Error('S3_BUCKET is required when AWS_MODE=aws');
